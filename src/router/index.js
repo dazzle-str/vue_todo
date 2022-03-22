@@ -19,7 +19,7 @@ const routes = [
       { path: '/mine', component: Mine }
     ]
   },
-  { path: '/time', component: Time }
+  { path: '/time/:id/:time', component: Time, props: true }
 ]
 
 const router = new VueRouter({

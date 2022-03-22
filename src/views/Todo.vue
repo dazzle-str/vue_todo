@@ -11,7 +11,7 @@
         <template #left>
           <van-button square type="primary" text="编辑" @click="editTodo(item._id)" />
         </template>
-        <van-cell center :title="item.name" value="开始" :label="item.time + '分钟'" is-link to="time" />
+        <van-cell center :title="item.name" value="开始" :label="item.time + '分钟'" @click="link(item._id, item.time)" />
         <template #right>
           <van-button square type="danger" text="删除" @click="removeTodo(item._id)" />
         </template>
@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { Dialog } from 'vant'
 export default {
   data () {
     return {
@@ -103,7 +102,7 @@ export default {
       })
     },
     removeTodo (id) {
-      Dialog.confirm({
+      this.$dialog.confirm({
         message: '确定删除吗？'
       }).then(() => {
         const db = this.$store.state.app.database()
@@ -116,6 +115,9 @@ export default {
           this.getTodo()
         })
       }).catch(() => {})
+    },
+    link (id, time) {
+      this.$router.push(`/time/${id}/${time}`)
     }
   },
   created () {
