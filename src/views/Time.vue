@@ -2,9 +2,11 @@
   <div class="time">
     <h4>待办名称</h4>
 
-    <van-count-down ref="countDown" :time="this.time * 60 * 1000" format="mm:ss" @finish="finish" />
+    <div class="count">
+      <van-circle v-model="currentRate" :rate="rate" :speed="speed" layer-color="#ebedf0" />
 
-    <van-circle v-model="currentRate" :rate="rate" :speed="speed" layer-color="#ebedf0" />
+      <van-count-down ref="countDown" :time="this.time * 60 * 1000" format="mm:ss" @finish="finish" />
+    </div>
 
     <div>{{ status }}</div>
 
@@ -56,6 +58,13 @@ export default {
         position: 'top'
       })
       this.status = '已完成'
+      const db = this.$store.state.app.database()
+      const todo = db.collection('todo')
+      const _ = db.command
+      todo.doc(this.id).update({
+        count: _.inc(1),
+        total: _.inc(Number(this.time))
+      })
       window.setTimeout(() => {
         this.$router.push('/todo')
       }, 1000)
@@ -78,6 +87,15 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  .count {
+    position: relative;
+    .van-count-down {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
   .control {
     width: 50%;
     display: flex;
@@ -87,6 +105,8 @@ export default {
       background-color: transparent;
       border: 0;
       padding: 0;
+      height: 42px;
+      line-height: 1;
       .van-button__icon {
         font-size: 3em;
       }

@@ -11,7 +11,7 @@
         <template #left>
           <van-button square type="primary" text="编辑" @click="editTodo(item._id)" />
         </template>
-        <van-cell center :title="item.name" value="开始" :label="item.time + '分钟'" @click="link(item._id, item.time)" />
+        <van-cell center :title="item.name" :value="item.count === 0 ? '开始' : '已专注' + item.count + '次'" :label="item.time + '分钟'" @click="link(item._id, item.time)" />
         <template #right>
           <van-button square type="danger" text="删除" @click="removeTodo(item._id)" />
         </template>
@@ -21,11 +21,9 @@
     <van-dialog v-model="showDialog" :title="update ? '编辑待办' : '添加待办'" show-cancel-button :before-close="beforeClose" @closed="reset" @confirm="submit">
       <van-form ref="todoFormRef" @submit="setTodo">
         <van-field v-model="todoForm.name" label="待办名称" placeholder="请输入待办名称" :rules="[{ required: true }]" />
-        <van-field v-model="todoForm.time" label="专注时间" placeholder="输入专注分钟数" :rules="[{ required: true }]" @focus="showKeyboard = true" @blur="showKeyboard = false" />
+        <van-field v-model="todoForm.time" type="digit" label="专注时间" placeholder="输入专注分钟数" :rules="[{ required: true }]" />
       </van-form>
     </van-dialog>
-
-    <van-number-keyboard v-model="todoForm.time" :show="showKeyboard" @blur="showKeyboard = false" z-index="9999" safe-area-inset-bottom />
   </div>
 </template>
 
@@ -35,10 +33,11 @@ export default {
     return {
       todoList: [],
       showDialog: false,
-      showKeyboard: false,
       todoForm: {
         name: '',
-        time: ''
+        time: '',
+        count: 0,
+        total: 0
       },
       update: false
     }
